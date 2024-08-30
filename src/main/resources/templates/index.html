@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>Budget Tracker</title>
+
+        <!-- SIMPLE BAR SCROLL LIBRARY -->
+        <link rel="stylesheet" href="https://unpkg.com/simplebar@5.3.4/dist/simplebar.min.css">
+        <script src="https://unpkg.com/simplebar@5.3.4/dist/simplebar.min.js"></script>
+        <!--  -->
+
+        
+
+
+        <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script> -->
+
+        <link rel="stylesheet" href="./styles/styles.css">
+
+    </head>
+
+    <body>
+        
+
+        <div class="success_message hide" id="success_message">
+            <p>Transaction has been added!</p>
+        </div>
+
+
+        <div class="add_transactions_popup overlay hide">
+            <div class="popup_container">
+
+                <div class="top">
+                    <h2>Add Transaction</h2>
+    
+                    <button >X</button>
+                </div>
+
+                 <form id="add_transaction_form">
+                     
+                    <div class="add_filter">
+                         <label for="start_date_filter">Date:</label>
+                         <input name="date" type="date" id="start_date_filter">   
+                     </div>
+
+                     <div class="add_filter">
+                         <label for="description">Description:</label>
+                         <input name="details" type="text" id="description">   
+                     </div>
+
+                     <div class="add_filter">
+                         <label for="amount">Amount:</label>
+                         <input name="amount" type="number" id="amount">   
+                     </div>
+
+                    <div class="add_filter">
+                        <label for="select_category">Category:</label>
+                        <select name="category" id="select_category">
+                            <option value="">All</option>
+                        </select>
+                    </div>
+
+
+                    
+                    <button type="submit" id="add_transaction_btn">Add</button>
+                    
+                    
+                </form>
+                <p class="error_text" id="error_text_transactions"></p>
+            </div>
+        </div>
+
+         <div class="categories_popup overlay hide">
+            <div class="popup_container">
+                 <div class="top">
+                    <h2>Categories</h2>
+    
+                    <button >X</button>
+                </div>
+
+                <form>
+                    <div class="add_filter">
+                        <label for="description">Name</label>
+                        <input name="description" type="text" id="description">   
+                    </div> 
+
+                    <div class="add_filter">
+                        <label for="select_type">type:</label>
+                        <select name="type" id="select_type">
+                            <option value="">All</option>
+                            <option value="income">Income</option>
+                            <option value="expense">Expense</option>
+                            <option value="investment">Investment</option>
+                        </select>
+                    </div>
+
+                    <button type="submit">add category</button>
+                </form>
+                <p class="error_text" id="error_text_category"></p>
+
+                <div class="categories_list_container" >
+                    <div class="categories_info">
+                        <span>name</span>
+                        <span>type</span>
+                    </div>
+    
+                    <ul id="categories_list" >
+            
+                    </ul>
+                </div>
+
+                <h2 class="length_alert">No categories found!</h2>
+            </div>
+        </div>
+
+
+        <header>
+
+            <nav class="container">
+
+                <ul class="nav_ul">
+                    <li class="nav_link"><a href="/">Home</a></li>
+                    <!-- <li class="nav_link"><a href="/addT">Add Transactions</a></li> -->
+                    <li class="nav_link"><a href="/reports">Reports</a></li>
+                </ul>
+
+            </nav>
+
+        </header>
+
+        <section>
+            <div class="container">
+    
+                
+                <h1>Budget Tracker - Transactions</h1>
+    
+                <div class="filters">
+
+                    <div class="filter_container">
+                        <label for="categoryType">Type:</label>
+                        <select class="form_control" id="categoryType">
+                            <option value="">All</option>
+                            <option value="income">Income</option>
+                            <option value="expense">Expense</option>
+                            <option value="investment">Investment</option>
+                        </select>
+                    </div>
+
+                    <div class="filter_container">
+                        <label for="category">Category:</label>
+                        <select class="form_control" id="category">
+                            <option value="">All</option>
+                        </select>
+                    </div>
+
+                    <div class="filter_container">
+                        <label for="startDate">Date Range:</label>
+                        <div class="input_group">
+                            <input type="date" class="form_control" id="startDate">
+                            
+                                <span class="input_group_text">to</span> 
+                            
+                            <input type="date" class="form_control" id="endDate">
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="buttons">
+
+                    <button>
+                        add transaction
+                    </button>
+    
+                    <button>
+                        categories
+                    </button>
+                </div>
+
+                <div class="selection_for_deletion hide">
+                    <span>Selected: <span id="count_for_deletion">0</span> </span>
+                    <button class="delete_element"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="1rem" width="1rem" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M2.5 1a1 1 0 00-1 1v1a1 1 0 001 1H3v9a2 2 0 002 2h6a2 2 0 002-2V4h.5a1 1 0 001-1V2a1 1 0 00-1-1H10a1 1 0 00-1-1H7a1 1 0 00-1 1H2.5zm3 4a.5.5 0 01.5.5v7a.5.5 0 01-1 0v-7a.5.5 0 01.5-.5zM8 5a.5.5 0 01.5.5v7a.5.5 0 01-1 0v-7A.5.5 0 018 5zm3 .5a.5.5 0 00-1 0v7a.5.5 0 001 0v-7z" clip-rule="evenodd"></path></svg></button>
+                    <input name="select_all_transactions" type="checkbox">
+                    <button class="close_selection_for_deletion"><svg stroke="currentColor" fill="none" stroke-width="1" viewBox="0 0 24 24" height="1.2rem" width="1.2rem" xmlns="http://www.w3.org/2000/svg"><path d="M6.2253 4.81108C5.83477 4.42056 5.20161 4.42056 4.81108 4.81108C4.42056 5.20161 4.42056 5.83477 4.81108 6.2253L10.5858 12L4.81114 17.7747C4.42062 18.1652 4.42062 18.7984 4.81114 19.1889C5.20167 19.5794 5.83483 19.5794 6.22535 19.1889L12 13.4142L17.7747 19.1889C18.1652 19.5794 18.7984 19.5794 19.1889 19.1889C19.5794 18.7984 19.5794 18.1652 19.1889 17.7747L13.4142 12L19.189 6.2253C19.5795 5.83477 19.5795 5.20161 19.189 4.81108C18.7985 4.42056 18.1653 4.42056 17.7748 4.81108L12 10.5858L6.2253 4.81108Z" fill="currentColor"></path></svg></button>
+                </div>
+    
+                <div class="transactions">
+                    <div class="transaction_info">
+                        <span>Date</span>
+                        <span>Description</span>
+                        <span>Category</span>
+                        <span>Amount</span>
+                    </div>
+    
+                    <ul class="transactions_container">
+                       
+                    </ul>
+                </div>
+
+              
+
+                <div class="pagination_container" id="pagination_container">
+                    <button id="left"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M134.059 296H436c6.627 0 12-5.373 12-12v-56c0-6.627-5.373-12-12-12H134.059v-46.059c0-21.382-25.851-32.09-40.971-16.971L7.029 239.029c-9.373 9.373-9.373 24.569 0 33.941l86.059 86.059c15.119 15.119 40.971 4.411 40.971-16.971V296z"></path></svg> </button>
+                    <ul class="pagination" id="pagination">
+                        <li class="current_page">1</li>
+                    </ul>
+                    <button id="right"> <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M313.941 216H12c-6.627 0-12 5.373-12 12v56c0 6.627 5.373 12 12 12h301.941v46.059c0 21.382 25.851 32.09 40.971 16.971l86.059-86.059c9.373-9.373 9.373-24.569 0-33.941l-86.059-86.059c-15.119-15.119-40.971-4.411-40.971 16.971V216z"></path></svg> </button>
+                </div>
+    
+                <div class="filter_message hide">
+                    <h2>No transactions found!</h2>
+                </div>
+                 
+    
+            </div>
+        </section>
+
+       
+    </body>
+     <script src="script.js"></script>
+</html>
+
+
+<!-- <table class="table table-striped table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Category</th>
+                            <th>Amount</th>
+                        </tr>
+                        </thead>
+                        <tbody id="transaction_table_body">
+                        <tr th:each="transaction : ${transactions}">
+                            <td th:text="${transaction.date}"></td>
+                            <td th:text="${transaction.details}"></td>
+                            <td th:text="${transaction.category.description}"></td>
+                            <td th:text="${transaction.amount}"></td>
+                        </tr>
+
+                        </tbody>
+                    </table> -->
+
+<!-- <!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Budget Tracker</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+
+    <script src="script.js"></script>
+
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> 
+
+    <link rel="stylesheet" href="./styles/styles.css">
+
+</head>
+
+<body>
+
+
+<nav class="navbar navbar-default">
+
+    <div class="container-fluid">
+
+        <div class="navbar-header">
+            <a class="navbar-brand">Budget Tracker</a>
+        </div>
+        <ul class="nav-ul">
+            <li class="nav-link"><a href="/">Home</a></li>
+            <li class="nav-link"><a href="/addT">Add Transactions</a></li>
+            <li class="nav-link"><a href="/reports">Reports</a></li>
+        </ul>
+
+    </div>
+
+</nav>
+
+
+<div class="container">
+
+    <h1>Budget Tracker - Transactions</h1>
+
+    <div class="row">
+        <div class="col-sm-4">
+            <label>Type:</label>
+            <select class="form-control" id="type_filter">
+                <option value="">All</option>
+                <option value="income">Income</option>
+                <option value="expense">Expense</option>
+            </select>
+        </div>
+        <div class="col-sm-4">
+            <label>Category:</label>
+            <select class="form-control" id="category_filter">
+                <option value="">All</option>
+                <option data-th-each="category : ${categories}" data-th-text="${category.description}"></option>
+
+            </select>
+        </div>
+        <div class="col-sm-4">
+            <label>Date Range:</label>
+            <div class="input-group">
+                <input type="date" class="form-control" id="start_date_filter">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">to</span>
+                </div>
+                <input type="date" class="form-control" id="end_date_filter">
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-sm-12">
+            <table class="table table-striped table-bordered">
+                <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Category</th>
+                    <th>Amount</th>
+                </tr>
+                </thead>
+                <tbody id="transaction_table_body">
+                <tr th:each="transaction : ${transactions}">
+                    <td th:text="${transaction.date}"></td>
+                    <td th:text="${transaction.details}"></td>
+                    <td th:text="${transaction.category.description}"></td>
+                    <td th:text="${transaction.amount}"></td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-sm-12">
+            <a class="btn btn-primary" href="/addT">Add Transaction</a>
+        </div>
+    </div>
+
+</div>
+
+<section>
+    <p class="ceva">ASDBASDB</p>
+    <div></div>
+</section>
+</body>
+</html> -->
